@@ -1,0 +1,27 @@
+{
+  "name": "firebase_migrate_now",
+  "version": "1.0.0",
+  "description": "no more vendor lockin, easily migrate your firebase data to other platofrms ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Anirudh-sk/firebase_migrate_now.git"
+  },
+  "keywords": [
+    "firebase",
+    "migration",
+    "tool",
+    "vendor",
+    "lockin",
+    "prevention"
+  ],
+  "author": "Sai Anirudh, Aivirex Innovations LLP",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Anirudh-sk/firebase_migrate_now/issues"
+  },
+  "homepage": "https://github.com/Anirudh-sk/firebase_migrate_now#readme"
+}

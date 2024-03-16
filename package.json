@@ -1,6 +1,6 @@
 {
   "name": "firebase_migrate_now",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "no more vendor lockin, easily migrate your firebase data to other platofrms ",
   "main": "index.js",
   "scripts": {

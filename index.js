@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { getFirestore, collection, getDocs } = require('firebase/firestore/lite');
 
 async function writeDataToCSV(data, outputPath) {
   try {
@@ -22,21 +23,21 @@ async function writeDataToCSV(data, outputPath) {
   }
 }
 
-async function readData(adminSdk, databaseType, outputPath) {
+async function readData(app, databaseType, outputPath) {
   try {
     let data;
+    const db = getFirestore(app);
+
     if (databaseType === 'realtime') {
-      const snapshot = await adminSdk.database().ref().once('value');
-      data = snapshot.val();
+      // Implement Realtime Database reading logic here if needed
+      throw new Error('Realtime Database reading is not supported in this package.');
     } else if (databaseType === 'firestore') {
-      const collections = await adminSdk.firestore().listCollections();
+      const collections = await getDocs(collection(db, 'your-collection-name')); // Replace with your actual collection name
       const allData = [];
 
-      for (const collectionRef of collections) {
-        const querySnapshot = await collectionRef.get();
-        const collectionData = querySnapshot.docs.map(doc => doc.data());
-        allData.push({ collection: collectionRef.id, data: collectionData });
-      }
+      collections.forEach(doc => {
+        allData.push({ collection: doc.id, data: doc.data() });
+      });
 
       data = allData;
     } else {

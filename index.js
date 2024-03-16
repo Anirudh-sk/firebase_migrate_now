@@ -1,19 +1,28 @@
 const fs = require('fs');
-const { getFirestore, collection, getDocs } = require('firebase/firestore/lite');
 
 async function writeDataToCSV(data, outputPath) {
   try {
-    const csvHeader = ['Collection', 'Data'];
-
-    // Convert data to CSV format
     const csvRows = [];
-    for (const item of data) {
-      const rowData = [item.collection, JSON.stringify(item.data)];
+    const allFields = new Set();
+    data.forEach(item => {
+      Object.keys(item.data).forEach(field => {
+        allFields.add(field);
+      });
+    });
+    // console.log('All fields:', allFields);
+    const csvHeader = ['collection_name', ...allFields];
+    data.forEach(item => {
+      const rowData = [item.collection];
+      allFields.forEach(field => {
+        const value = item.data[field] || '';
+        rowData.push(value);
+      });
       csvRows.push(rowData.join(','));
-    }
-    const csvContent = [csvHeader.join(','), ...csvRows].join('\n');
+    });
+    // console.log('CSV rows:', csvRows);
 
-    // Write CSV content to file
+    const csvContent = [csvHeader.join(','), ...csvRows].join('\n');
+    // console.log('CSV content:', csvContent);
     fs.writeFileSync(outputPath, csvContent);
     console.log('Data written to CSV file:', outputPath);
     return true;
@@ -23,35 +32,24 @@ async function writeDataToCSV(data, outputPath) {
   }
 }
 
-async function readData(app, databaseType, outputPath) {
+async function migrateFirestore(collections, outputPath) {
   try {
-    let data;
-    const db = getFirestore(app);
+    const allData = [];
 
-    if (databaseType === 'realtime') {
-      // Implement Realtime Database reading logic here if needed
-      throw new Error('Realtime Database reading is not supported in this package.');
-    } else if (databaseType === 'firestore') {
-      const collections = await getDocs(collection(db, 'your-collection-name')); // Replace with your actual collection name
-      const allData = [];
+    collections.forEach(doc => {
+      allData.push({ collection: doc.id, data: doc.data() });
+    });
 
-      collections.forEach(doc => {
-        allData.push({ collection: doc.id, data: doc.data() });
-      });
-
-      data = allData;
-    } else {
-      throw new Error('Invalid database type. Please specify "realtime" or "firestore".');
-    }
-
-    // Write data to CSV file
-    await writeDataToCSV(data, outputPath);
-    
-    return data;
+    await writeDataToCSV(allData, outputPath);
+    return true;
   } catch (error) {
-    console.error('Error reading data or writing to CSV:', error);
-    return null;
+    console.error('Error migrating Firestore data:', error);
+    return false;
   }
 }
 
-module.exports = readData;
+async function migrateRTD(db, outputPath) {
+  console.log('Realtime Database migration is coming soon.');
+}
+
+module.exports = { migrateFirestore, migrateRTD };

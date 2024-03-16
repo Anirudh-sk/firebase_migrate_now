@@ -16,7 +16,11 @@
     "tool",
     "vendor",
     "lockin",
-    "prevention"
+    "prevention",
+    "data",
+    "export",
+    "firestore",
+    "realtime"
   ],
   "author": "Sai Anirudh, Aivirex Innovations LLP",
   "license": "MIT",
